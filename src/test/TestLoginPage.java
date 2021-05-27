@@ -4,6 +4,7 @@ import org.testng.annotations.Test;
 
 import pages.HomePage;
 import pages.LoginPage;
+import utilities.PropertyUtil;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.BeforeTest;
@@ -11,30 +12,23 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
-
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.testng.Assert;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.annotations.AfterClass;
 
 public class TestLoginPage {	
 	WebDriver driver;
-	Properties prop;
 	LoginPage objLoginPage;
 	HomePage objHomePage;
 		
 	@Test
 	public void testLogin() {
-		String id = prop.getProperty("userId");
-		String pwd = prop.getProperty("password");
-		objLoginPage.enterLoginCredentials(id, pwd);
-		WebElement weMarquee = objHomePage.getMarquee();
-		String welcomeIdText = objHomePage.getWelcomeIdText();
-		Assert.assertTrue((weMarquee != null) && (welcomeIdText.contains("Manger Id :")));
+		objLoginPage.enterLoginCredentials(PropertyUtil.UserId, PropertyUtil.Password);
+		WebDriverWait wait = new WebDriverWait(driver,20);
+		wait.until(ExpectedConditions.titleContains("HomePage"));
+		objHomePage.verifyTitleHomePage();
 	}
 	  
 	@BeforeMethod
@@ -49,7 +43,7 @@ public class TestLoginPage {
 	
 	@BeforeClass
 	public void launchBrowser() {
-		System.setProperty(prop.getProperty("driverName"), prop.getProperty("driverPath"));
+		System.setProperty(PropertyUtil.DriverName,PropertyUtil.DriverPath);
 		driver = new FirefoxDriver();
 		driver.manage().window().maximize();
 		driver.get("http://www.demo.guru99.com/V4/");
@@ -61,10 +55,7 @@ public class TestLoginPage {
 	  
 	@BeforeTest
 	public void init() throws Exception {
-		File propFile = new File("data.properties");
-		FileInputStream fis = new FileInputStream(propFile);
-		prop = new Properties();
-		prop.load(fis);
+		PropertyUtil.init();
 	}
 	  
 	@AfterTest

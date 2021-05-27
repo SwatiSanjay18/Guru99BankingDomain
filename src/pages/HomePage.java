@@ -2,23 +2,23 @@ package pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.testng.Assert;
 
 public class HomePage {
 	WebDriver driver;
-	By marqueeWelcome = By.xpath("//marquee[text()=\"Welcome To Manager's Page of Guru99 Bank\"]");
-	By welcomeManagerId = By.xpath("//table//table/tbody/tr[3]/td");
+	By titleHomePage = By.tagName("title");
 	
 	public HomePage(WebDriver driver) {
 		this.driver = driver;
 	}
 	
-	public WebElement getMarquee() {
-		return(driver.findElement(marqueeWelcome));
+	public String getTitleHomePage() {
+		return(driver.findElement(titleHomePage).getAttribute("textContent"));
 	}
 	
-	public String getWelcomeIdText() {
-		return(driver.findElement(welcomeManagerId).getText());
+	public void verifyTitleHomePage() {
+		String strActualTitle = getTitleHomePage().trim();
+		String strExpectedTitle = "Guru99 Bank Manager HomePage";
+		Assert.assertEquals(strActualTitle, strExpectedTitle);
 	}
-
 }
